@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Currency converter</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+	<div>btc = <span id="price"></span> usd</div>
+
+
+	<script type="text/javascript">
+		$(function () {
+			$.ajax({
+				method: "GET",
+				url: "https://api.cryptonator.com/api/ticker/btc-usd",
+				dataType: "json"
+			}).done(function (json) {
+				$("#price").html(json.ticker.price)
+				$.ajax({
+					method: "GET",
+					url: "/save",
+					data: {price: json.ticker.price},
+					dataType: "json"
+				})
+			})
+
+
+		setInterval(function () {
+				$.ajax({
+				method: "GET",
+				url: "https://api.cryptonator.com/api/ticker/btc-usd",
+				dataType: "json"
+			}).done(function (json) {
+				$("#price").html(json.ticker.price)
+				$.ajax({
+					method: "GET",
+					url: "/save",
+					data: {price: json.ticker.price},
+					dataType: "json"
+				})
+			})
+		},1000*10)
+		
+
+
+		})
+	</script>
+
+</body>
+</html>
