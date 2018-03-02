@@ -4,13 +4,55 @@
 	<meta charset="UTF-8">
 	<title>Currency converter</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<style type="text/css">
+		.basket{
+			width: 100px;
+		}
+	</style>
 </head>
 <body>
+	<form>
+		<input type="input" name="base" placeholder="usd">
+		<input type="input" name="convert" placeholder="btc">
+		<button name="submit">Add</button>
+	</form>
 	<div>btc = <span id="price"></span> usd</div>
-
+	<div id="basket" style="float: right;" width="100px">
+	</div>
 
 	<script type="text/javascript">
 		$(function () {
+			let basket = [[]]
+			let base = $("input[name=base]");
+			let convert = $("input[name=convert]")
+			$("button[name=submit]").click(function (e) {
+				e.preventDefault();
+				$.ajax({
+					method: "GET",
+					url: "https://api.cryptonator.com/api/ticker/"+convert.val()+"-"+base.val(),
+					dataType: "json"
+				}).done(function (json) {
+
+					if(!json.success) {
+						alert("Currencies does not exist")
+					}
+					else{
+						basket.push( [ base.val(), convert.val() ])
+						$(".basket").remove()
+						basket.forEach(function(i){
+							console.log(i)
+							if(i[0] != undefined)
+								$("#basket").append("<div class='basket'> "+i[0]+" - "+i[1]+" </div>")
+						}) 
+					}
+				})
+
+			})
+
+
+
+
+
 			$.ajax({
 				method: "GET",
 				url: "https://api.cryptonator.com/api/ticker/btc-usd",
