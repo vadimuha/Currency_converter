@@ -22,9 +22,16 @@
 
 	<script type="text/javascript">
 		$(function () {
-			let basket = [[]]
+			let request = {	// Request fresh btc-usd rate
+				method: "GET",
+				url: "https://api.cryptonator.com/api/ticker/btc-usd",
+				dataType: "json"
+			}
+
+			let basket = [] // Where currencies are stored
 			let base = $("input[name=base]");
 			let convert = $("input[name=convert]")
+
 			$("button[name=submit]").click(function (e) {
 				e.preventDefault();
 				$.ajax({
@@ -32,34 +39,22 @@
 					url: "https://api.cryptonator.com/api/ticker/"+convert.val()+"-"+base.val(),
 					dataType: "json"
 				}).done(function (json) {
-
-					if(!json.success) {
+					if(!json.success) {	// Check for validity
 						alert("Currencies does not exist")
 					}
-					else{
-						basket.push( [ base.val(), convert.val() ])
-						$(".basket").remove()
-						basket.forEach(function(i){
-							console.log(i)
-							if(i[0] != undefined)
-								$("#basket").append("<div class='basket'> "+i[0]+" - "+i[1]+" </div>")
+					else {
+						basket.push( [ base.val(), convert.val() ])	// Add new pair of currencies in stack
+						$(".basket").remove()	// Clear basket
+						basket.forEach(function(i) { // Fill basket
+							$("#basket").append("<div class='basket'> "+i[0]+" - "+i[1]+" </div>")
 						}) 
 					}
 				})
-
 			})
 
-
-
-
-
-			$.ajax({
-				method: "GET",
-				url: "https://api.cryptonator.com/api/ticker/btc-usd",
-				dataType: "json"
-			}).done(function (json) {
+			$.ajax(request).done(function (json) {	// Check before first refresh
 				$("#price").html(json.ticker.price)
-				$.ajax({
+				$.ajax({	
 					method: "GET",
 					url: "/save",
 					data: {price: json.ticker.price},
@@ -67,13 +62,8 @@
 				})
 			})
 
-
-		setInterval(function () {
-				$.ajax({
-				method: "GET",
-				url: "https://api.cryptonator.com/api/ticker/btc-usd",
-				dataType: "json"
-			}).done(function (json) {
+		setInterval(function () { // Refresh rates
+			$.ajax(request).done(function (json) {
 				$("#price").html(json.ticker.price)
 				$.ajax({
 					method: "GET",
@@ -83,8 +73,6 @@
 				})
 			})
 		},1000*10)
-		
-
 
 		})
 	</script>
