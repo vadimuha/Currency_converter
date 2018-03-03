@@ -20,7 +20,7 @@ class Db (db.Model):
 
 def Write_rate():
 	''' Function will write current btc-usd rate into database each 10 seconds '''
-	threading.Timer(10.0, Write_rate).start()	# Recursive timer
+	threading.Timer(10.0, Write_rate).start()	# Timer
 
 	r = requests.get("https://api.cryptonator.com/api/ticker/btc-usd")	# Request for fresh rates
 	# Write into database	
