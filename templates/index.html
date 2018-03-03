@@ -54,23 +54,11 @@
 
 			$.ajax(request).done(function (json) {	// Check rates before first refresh
 				$("#price").html(json.ticker.price)
-				$.ajax({	// Save current rate into database
-					method: "GET",
-					url: "/save",
-					data: {price: json.ticker.price},
-					dataType: "json"
-				})
 			})
 
 		setInterval(function () { // Refresh rates every 10 secs
 			$.ajax(request).done(function (json) {
 				$("#price").html(json.ticker.price)
-				$.ajax({	// Save current rate into database 
-					method: "GET",
-					url: "/save",
-					data: {price: json.ticker.price},
-					dataType: "json"
-				})
 			})
 		},1000*10)
 

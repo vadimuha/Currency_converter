@@ -1,5 +1,7 @@
 from flask import Flask,render_template,request
 from flask_sqlalchemy import SQLAlchemy
+import threading
+import requests
 
 app = Flask(__name__)
 
@@ -16,22 +18,21 @@ class Db (db.Model):
 	def __init__ (self,BTC_price):
 		self.BTC_price = BTC_price
 
+def Write_rate():
+	''' Function will write current btc-usd rate into database each 10 seconds '''
+	threading.Timer(10.0, Write_rate).start()	# Recursive timer
+
+	r = requests.get("https://api.cryptonator.com/api/ticker/btc-usd")	# Request for fresh rates
+	# Write into database	
+	new_ex = Db(r.json()['ticker']['price'])
+	db.session.add(new_ex)
+	db.session.commit()
+Write_rate() # Start writing into database
+
 
 @app.route("/")
 def index():
 	return render_template("index.html")
-
-
-''' Ajax section '''
-
-''' Write given rate into database '''
-@app.route("/save",methods = ['GET'])
-def save():
-	price = request.args.get("price")
-	new_ex = Db(price)
-	db.session.add(new_ex)
-	db.session.commit()
-	return "sucess"
 
 if __name__ == "__main__":
 	app.run(host='0.0.0.0',debug=True)
