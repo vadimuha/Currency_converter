@@ -52,9 +52,9 @@
 				})
 			})
 
-			$.ajax(request).done(function (json) {	// Check before first refresh
+			$.ajax(request).done(function (json) {	// Check rates before first refresh
 				$("#price").html(json.ticker.price)
-				$.ajax({	
+				$.ajax({	// Save current rate into database
 					method: "GET",
 					url: "/save",
 					data: {price: json.ticker.price},
@@ -62,10 +62,10 @@
 				})
 			})
 
-		setInterval(function () { // Refresh rates
+		setInterval(function () { // Refresh rates every 10 secs
 			$.ajax(request).done(function (json) {
 				$("#price").html(json.ticker.price)
-				$.ajax({
+				$.ajax({	// Save current rate into database 
 					method: "GET",
 					url: "/save",
 					data: {price: json.ticker.price},

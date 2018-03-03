@@ -23,6 +23,8 @@ def index():
 
 
 ''' Ajax section '''
+
+''' Write given rate into database '''
 @app.route("/save",methods = ['GET'])
 def save():
 	price = request.args.get("price")
